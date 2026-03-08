@@ -1,4 +1,3 @@
-import React from 'react';
 import { Plane, Calendar, DollarSign, FileText, Plus, ChevronRight } from 'lucide-react';
 
 const HomePage = () => {
