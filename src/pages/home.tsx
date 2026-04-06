@@ -1,6 +1,10 @@
-import { Plane, Calendar, DollarSign, FileText, Plus, ChevronRight } from 'lucide-react';
+import { Plane, Calendar, DollarSign, FileText, Plus, ChevronRight, LogOut } from 'lucide-react';
 
-const HomePage = () => {
+interface HomePageProps {
+  onLogout: () => void;
+}
+
+const HomePage = ({ onLogout }: HomePageProps) => {
     const stats = [
         { title: 'Viagens Ativas', value: '12', icon: Plane, color: 'bg-blue-500' },
         { title: 'Aguardando Aprovação', value: '05', icon: FileText, color: 'bg-amber-500' },
@@ -22,10 +26,19 @@ const HomePage = () => {
                     <h1 className="text-3xl font-bold text-gray-800">Sistema de Gestão de Viagens</h1>
                     <p className="text-gray-600">Bem-vindo de volta! Aqui está o resumo das operações.</p>
                 </div>
-                <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg">
-                    <Plus size={20} />
-                    Nova Solicitação
-                </button>
+                <div className="flex items-center gap-3">
+                    <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg">
+                        <Plus size={20} />
+                        Nova Solicitação
+                    </button>
+                    <button
+                        onClick={onLogout}
+                        className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-3 rounded-lg font-medium transition-all"
+                    >
+                        <LogOut size={18} />
+                        Sair
+                    </button>
+                </div>
             </header>
 
             {/* Stats Grid */}
