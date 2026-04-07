@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Painel - VoyageGest</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="dashboard-layout">
+    <header class="top-bar">
+        <div>VoyageGest</div>
+        <div id="userLabel"></div>
+    </header>
+    <main class="main-content">
+        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+            <h1>Dashboard</h1>
+            <div style="display:flex; gap:10px;">
+                <a href="solicitar-viagem.html" class="btn-primary" style="width:auto; text-decoration:none;">Nova
+                    Viagem</a>
+                <a href="lancar-despesa.html" class="btn-primary"
+                    style="width:auto; background:#48bb78; text-decoration:none;">Lançar Despesa</a>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data Ida</th>
+                    <th>Data Volta</th>
+                    <th>Tipo</th>
+                </tr>
+            </thead>
+            <tbody id="listaViagens"></tbody>
+        </table>
+    </main>
+    <script>
+        const u = JSON.parse(localStorage.getItem('usuario'));
+        if (!u) window.location.href = 'login.html';
+        document.getElementById('userLabel').innerText = `Olá, ${u.nome}`;
+        async function load() {
+            const res = await fetch('/api/viagens');
+            const data = await res.json();
+            document.getElementById('listaViagens').innerHTML = data.map(v => `<tr><td>${v.viagem_id}</td><td>${v.data_ida.split('T')[0]}</td><td>${v.data_volta.split('T')[0]}</td><td>${v.tipo || 'Negócios'}</td></tr>`).join('');
+        }
+        load();
+    </script>
+</body>
+
+</html>
