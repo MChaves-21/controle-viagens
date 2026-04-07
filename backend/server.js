@@ -6,28 +6,24 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Configuração usando as variáveis que você preencheu na Vercel
+// Conexão usando process.env (Vercel injeta esses valores automaticamente)
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
-    // IMPORTANTE: Aiven exige SSL. Na Vercel, use rejectUnauthorized: false
     ssl: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false // Obrigatório para bancos em nuvem como Aiven na Vercel
     }
 });
 
 db.connect((err) => {
-    if (err) {
-        console.error('Erro ao conectar ao Aiven:', err);
-        return;
-    }
+    if (err) return console.error('Erro de conexão:', err);
     console.log('Conectado ao MySQL com sucesso!');
 });
 
-// Exemplo de rota de login
+// Rota de Login (Lembre-se de criar a tabela tbUsuarios no banco)
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const query = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
@@ -37,11 +33,10 @@ app.post('/login', (req, res) => {
         if (results.length > 0) {
             res.json({ success: true, user: results[0] });
         } else {
-            res.status(401).json({ success: false, message: "Login ou senha inválidos" });
+            res.status(401).json({ success: false, message: "Dados inválidos" });
         }
     });
 });
 
-// A Vercel Services espera que o app ouça em uma porta
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Backend rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
