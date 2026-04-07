@@ -3,50 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Solicitar Viagem - VoyageGest</title>
+    <title>Solicitar Viagem</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="dashboard-layout">
-    <header class="top-bar">
-        <div><strong>VoyageGest</strong> > Solicitar Viagem</div>
-        <a href="dashboard.html" class="btn-logout" style="background:#4a5568">Voltar</a>
-    </header>
-
-    <main class="main-content">
-        <div class="login-container" style="max-width: 600px; margin: 0 auto;">
-            <h2>Nova Solicitação de Viagem</h2>
-            <form id="viagemForm">
-                <div class="input-group">
-                    <label>Data de Ida</label>
-                    <input type="date" id="data_ida" required>
-                </div>
-                <div class="input-group">
-                    <label>Data de Volta</label>
-                    <input type="date" id="data_volta" required>
-                </div>
-                <div class="input-group">
-                    <label>Tipo de Viagem</label>
-                    <select id="viagem_tipo_id" required style="width:100%; padding:10px; border-radius:5px;">
-                        <option value="">Carregando tipos...</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primary">Registrar Viagem</button>
-            </form>
-            <div id="message"></div>
-        </div>
-    </main>
-
+<body class="login-page">
+    <div class="container">
+        <h2>Solicitar Viagem</h2>
+        <form id="viagemForm">
+            <div class="input-group"><label>Data Ida</label><input type="date" name="data_ida" required></div>
+            <div class="input-group"><label>Data Volta</label><input type="date" name="data_volta" required></div>
+            <div class="input-group"><label>Tipo</label><select name="viagem_tipo_id" id="tipos"></select></div>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="dashboard.html">Cancelar</a>
+        </form>
+    </div>
     <script src="js/main.js"></script>
     <script>
-        // Carrega os tipos de viagem do banco ao abrir a página
-        async function carregarTipos() {
-            const res = await fetch('/api/viagem-tipos');
-            const tipos = await res.json();
-            const select = document.getElementById('viagem_tipo_id');
-            select.innerHTML = tipos.map(t => `<option value="${t.viagem_tipo_id}">${t.descricao}</option>`).join('');
-        }
-        carregarTipos();
+        fetch('/api/viagem-tipos').then(r => r.json()).then(data => {
+            document.getElementById('tipos').innerHTML = data.map(t => `<option value="${t.viagem_tipo_id}">${t.descricao}</option>`).join('');
+        });
     </script>
 </body>
 
