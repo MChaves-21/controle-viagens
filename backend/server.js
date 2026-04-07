@@ -1,48 +1,47 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-require('dotenv').config();
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Configuração da conexão com os dados do seu print
+// Configuração usando as variáveis que você preencheu na Vercel
 const db = mysql.createConnection({
-    host: 'mysql-2953ee28-murilochaves211105-7941.k.aivencloud.com',
-    port: 12154,
-    user: 'avnadmin',
-    password: 'AVNS_hYCwTyygzY73ZSDv4BC', // Senha do seu print
-    database: 'defaultdb',
-    ssl: { rejectUnauthorized: false }
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT,
+    // IMPORTANTE: Aiven exige SSL. Na Vercel, use rejectUnauthorized: false
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
-db.connect(err => {
-    if (err) console.error('Erro ao conectar ao MySQL:', err);
-    else console.log('Conectado ao Aiven MySQL!');
+db.connect((err) => {
+    if (err) {
+        console.error('Erro ao conectar ao Aiven:', err);
+        return;
+    }
+    console.log('Conectado ao MySQL com sucesso!');
 });
 
-// Rota de Login
+// Exemplo de rota de login
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const query = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
 
     db.query(query, [login, senha], (err, results) => {
-        if (err) return res.status(500).json(err);
+        if (err) return res.status(500).json({ error: err.message });
         if (results.length > 0) {
-            res.json({ message: "Sucesso", user: results[0] });
+            res.json({ success: true, user: results[0] });
         } else {
-            res.status(401).json({ message: "Credenciais inválidas" });
+            res.status(401).json({ success: false, message: "Login ou senha inválidos" });
         }
     });
 });
 
-// Rota para listar viagens
-app.get('/viagens', (req, res) => {
-    db.query("SELECT * FROM tbViagem", (err, results) => {
-        if (err) res.status(500).send(err);
-        else res.json(results);
-    });
-});
-
-app.listen(3001, () => console.log("Servidor rodando na porta 3001"));
+// A Vercel Services espera que o app ouça em uma porta
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`Backend rodando na porta ${PORT}`));
