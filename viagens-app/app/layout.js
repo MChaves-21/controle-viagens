@@ -1,10 +1,11 @@
 'use client';
 import './globals.css';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   LayoutDashboard, Plane, Receipt, Users, BarChart3,
-  CreditCard, Settings, ChevronRight, Briefcase
+  ChevronRight, Briefcase, LogOut, ChevronDown
 } from 'lucide-react';
 
 const navItems = [
@@ -15,13 +16,58 @@ const navItems = [
   { href: '/relatorios', label: 'Relatórios', icon: BarChart3 },
 ];
 
+const perfilLabel = {
+  admin: 'Administrador',
+  gestor: 'Gestor',
+  financeiro: 'Financeiro',
+  colaborador: 'Colaborador',
+};
+
 export default function RootLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const isLogin = pathname === '/login';
+
+  const [user, setUser] = useState(null);
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    if (isLogin) return;
+    fetch('/api/auth/me')
+      .then(r => r.json())
+      .then(d => setUser(d.user))
+      .catch(() => {});
+  }, [isLogin, pathname]);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    await fetch('/api/auth/logout', { method: 'POST' });
+    setUser(null);
+    router.push('/login');
+    router.refresh();
+  };
+
+  // Login page: render without sidebar
+  if (isLogin) {
+    return (
+      <html lang="pt-BR">
+        <head>
+          <title>ViagemPro — Login</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </head>
+        <body>{children}</body>
+      </html>
+    );
+  }
+
+  const initials = user?.nome
+    ? user.nome.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()
+    : '?';
 
   return (
     <html lang="pt-BR">
       <head>
-        <title>Gestão de Viagens</title>
+        <title>ViagemPro</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
@@ -34,18 +80,17 @@ export default function RootLayout({ children }) {
             display: 'flex',
             flexDirection: 'column',
             position: 'fixed',
-            top: 0,
-            left: 0,
-            bottom: 0,
+            top: 0, left: 0, bottom: 0,
             zIndex: 40,
           }}>
             {/* Logo */}
             <div style={{ padding: '1.5rem 1rem 1rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: '0.25rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <div style={{
                   width: 36, height: 36, borderRadius: 10,
                   background: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(59,130,246,0.3)',
                 }}>
                   <Briefcase size={18} color="white" />
                 </div>
@@ -53,15 +98,14 @@ export default function RootLayout({ children }) {
                   <div style={{ color: 'white', fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '0.95rem', lineHeight: 1.2 }}>
                     ViagemPro
                   </div>
-                  <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.7rem' }}>
+                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem' }}>
                     Gestão de Despesas
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Divider */}
-            <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0.5rem 1rem' }} />
+            <div style={{ height: 1, background: 'rgba(255,255,255,0.08)', margin: '0.25rem 1rem 0.5rem' }} />
 
             {/* Nav */}
             <nav style={{ flex: 1, padding: '0.5rem 0.75rem', overflowY: 'auto' }} className="sidebar-scroll">
@@ -83,20 +127,54 @@ export default function RootLayout({ children }) {
               ))}
             </nav>
 
-            {/* Bottom */}
-            <div style={{ padding: '1rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* User + Logout */}
+            <div style={{ padding: '0.75rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{
+                background: 'rgba(255,255,255,0.06)',
+                borderRadius: 10,
+                padding: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+              }}>
+                {/* Avatar */}
                 <div style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: 'rgba(255,255,255,0.1)',
+                  width: 34, height: 34, borderRadius: 8, flexShrink: 0,
+                  background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.75rem', fontWeight: 700, color: 'white',
                 }}>
-                  <Users size={15} color="rgba(255,255,255,0.7)" />
+                  {initials}
                 </div>
-                <div>
-                  <div style={{ color: 'white', fontSize: '0.8rem', fontWeight: 600 }}>Administrador</div>
-                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem' }}>admin</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: 'white', fontSize: '0.8rem', fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {user?.nome || '...'}
+                  </div>
+                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.68rem' }}>
+                    {perfilLabel[user?.perfil] || user?.perfil || ''}
+                  </div>
                 </div>
+                {/* Logout button */}
+                <button
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  title="Sair"
+                  style={{
+                    background: 'rgba(255,255,255,0.08)',
+                    border: 'none',
+                    borderRadius: 7,
+                    width: 30, height: 30,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer',
+                    color: 'rgba(255,255,255,0.55)',
+                    flexShrink: 0,
+                    transition: 'background 0.15s, color 0.15s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.25)'; e.currentTarget.style.color = '#fca5a5'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.55)'; }}
+                >
+                  <LogOut size={14} />
+                </button>
               </div>
             </div>
           </aside>
