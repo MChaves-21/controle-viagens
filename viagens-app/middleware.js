@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/auth';
 
-const PUBLIC_PATHS = ['/login'];
+const PUBLIC_PATHS = [
+  '/login',
+  '/api/auth/login',
+  '/api/auth/logout',
+  '/api/auth/register',
+];
 
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
@@ -24,7 +29,6 @@ export async function middleware(request) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Pass user info via header to server components / API routes
   const res = NextResponse.next();
   res.headers.set('x-user-id', String(user.id));
   res.headers.set('x-user-nome', user.nome || '');
