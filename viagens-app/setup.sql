@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS seguranca.tbUsuarios (
   PRIMARY KEY (usuario_id)
 );
 
--- Inserir usuário admin padrão (senha: admin123)
+-- Inserir usuário admin inicial (troque a senha antes de usar em produção)
 INSERT IGNORE INTO seguranca.tbUsuarios (nome, login, senha, perfil)
 VALUES ('Administrador', 'admin', 'admin123', 'admin');
 

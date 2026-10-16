@@ -89,12 +89,11 @@ npm run dev
 
 ---
 
-## Acesso padrão
+## Primeiro acesso
 
-Após executar o `setup.sql`, utilize as credenciais abaixo para o primeiro acesso:
+O `setup.sql` cria um usuário administrador inicial. Defina uma senha forte para ele antes de publicar o sistema e não reutilize credenciais de exemplo em produção.
 
-| Campo | Valor |
-|-------|-------|
+-------|-------|
 | Login | `admin` |
 | Senha | `admin123` |
 
