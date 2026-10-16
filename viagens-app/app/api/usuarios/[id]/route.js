@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { hashPassword } from '@/lib/password';
 
 export async function PUT(req, { params }) {
   try {
@@ -9,7 +10,7 @@ export async function PUT(req, { params }) {
     if (senha) {
       await query(
         `UPDATE seguranca.tbUsuarios SET nome=?, login=?, senha=?, perfil=?, ativo=? WHERE usuario_id=?`,
-        [nome, login, senha, perfil, ativo ? 1 : 0, params.id]
+        [nome, login, await hashPassword(senha), perfil, ativo ? 1 : 0, params.id]
       );
     } else {
       await query(

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { hashPassword } from '@/lib/password';
 import { query } from '@/lib/db';
 
 export async function POST(req) {
@@ -26,7 +27,7 @@ export async function POST(req) {
 
     await query(
       `INSERT INTO seguranca.tbUsuarios (nome, login, senha, perfil, ativo) VALUES (?, ?, ?, 'colaborador', 1)`,
-      [nome.trim(), login.trim(), senha]
+      [nome.trim(), login.trim(), await hashPassword(senha)]
     );
 
     return NextResponse.json({ ok: true }, { status: 201 });

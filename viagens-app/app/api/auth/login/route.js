@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { signToken, COOKIE_NAME, cookieOptions } from '@/lib/auth';
+import { verifyPassword, hashPassword } from '@/lib/password';
 
 export async function POST(req) {
   try {
@@ -11,14 +12,21 @@ export async function POST(req) {
     }
 
     const [user] = await query(
-      `SELECT usuario_id, nome, login, perfil, ativo
+      `SELECT usuario_id, nome, login, perfil, ativo, senha
        FROM seguranca.tbUsuarios
-       WHERE login = ? AND senha = ? LIMIT 1`,
-      [login.trim(), senha]
+       WHERE login = ? LIMIT 1`,
+      [login.trim()]
     );
 
-    if (!user) {
+    const check = user ? await verifyPassword(senha, user.senha) : { ok: false };
+    if (!user || !check.ok) {
       return NextResponse.json({ error: 'Login ou senha inválidos.' }, { status: 401 });
+    }
+
+    // Migração transparente: senha antiga em texto puro vira hash no primeiro login
+    if (check.needsRehash) {
+      await query(`UPDATE seguranca.tbUsuarios SET senha = ? WHERE usuario_id = ?`,
+        [await hashPassword(senha), user.usuario_id]);
     }
 
     if (!user.ativo) {
