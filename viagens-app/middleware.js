@@ -7,6 +7,7 @@ const PUBLIC_PATHS = [
   '/api/auth/login',
   '/api/auth/logout',
   '/api/auth/register',
+  '/api/auth/demo',
 ];
 
 export async function middleware(request) {

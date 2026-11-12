@@ -40,6 +40,19 @@ function LoginInner() {
     }
   };
 
+  const handleDemo = async () => {
+    setError('');
+    setLoading(true);
+    const r = await fetch('/api/auth/demo', { method: 'POST' });
+    setLoading(false);
+    if (r.ok) {
+      router.push('/');
+      router.refresh();
+    } else {
+      setError('Modo demonstração indisponível.');
+    }
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
@@ -272,6 +285,24 @@ function LoginInner() {
                 }}
               >
                 {loading ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Entrando...</> : <>Entrar <ArrowRight size={16} /></>}
+              </button>
+              <button
+                type="button"
+                onClick={handleDemo}
+                disabled={loading}
+                style={{
+                  padding: '0.7rem',
+                  background: 'white',
+                  color: '#0f1e3c',
+                  border: '1.5px solid #cbd5e1',
+                  borderRadius: 9,
+                  fontFamily: 'DM Sans, sans-serif',
+                  fontWeight: 600,
+                  fontSize: '0.85rem',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                }}
+              >
+                Entrar como visitante (somente leitura)
               </button>
               <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#94a3b8', margin: '0.25rem 0 0' }}>
                 Não tem conta?{' '}

@@ -6,7 +6,7 @@
 [![CI](https://github.com/MChaves-21/controle-viagens/actions/workflows/ci.yml/badge.svg)](https://github.com/MChaves-21/controle-viagens/actions/workflows/ci.yml)
 ![Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel&logoColor=white)
 
-**🔗 Demo:** https://controle-viagens-black.vercel.app
+**🔗 Demo:** https://controle-viagens-black.vercel.app — clique em **Entrar como visitante** (somente leitura, sem cadastro)
 
 Sistema web de gestão de despesas de viagens corporativas, desenvolvido com Next.js e MySQL. Permite que colaboradores registrem e acompanhem viagens de negócio, submetam despesas para aprovação e gerem relatórios financeiros — tudo em uma interface centralizada e responsiva.
 
@@ -73,6 +73,8 @@ As regras ficam em `lib/permissions.js` e valem no servidor: chamar a API direto
 | Concluir viagem | ✅ | ✅ | ✅ | — |
 | Marcar despesa como paga | ✅ | — | ✅ | — |
 
+Na demonstração existe ainda o perfil **visitante**: o botão *Entrar como visitante* abre uma sessão sem senha e sem usuário no banco, que vê viagens, despesas, dashboard e relatórios, mas recebe `403` em qualquer criação, edição ou exclusão. Para desligar, defina `DEMO_MODE=off`.
+
 ---
 
 ## Testes
@@ -82,7 +84,7 @@ cd viagens-app
 npm test
 ```
 
-23 testes com **Vitest** cobrem as permissões por perfil, o hash de senhas (inclusive a migração de senhas antigas), a validação do JWT e o middleware de rotas. O GitHub Actions roda os testes e o build a cada push.
+31 testes com **Vitest** cobrem as permissões por perfil (inclusive o visitante), o hash de senhas (inclusive a migração de senhas antigas), a validação do JWT e o middleware de rotas. O GitHub Actions roda os testes e o build a cada push.
 
 ---
 

@@ -22,6 +22,7 @@ const perfilLabel = {
   gestor: 'Gestor',
   financeiro: 'Financeiro',
   colaborador: 'Colaborador',
+  visitante: 'Visitante (somente leitura)',
 };
 
 export default function RootLayout({ children }) {
