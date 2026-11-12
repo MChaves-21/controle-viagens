@@ -1,12 +1,19 @@
 # ViagemPro
 
+![Next.js](https://img.shields.io/badge/Next.js_15-000000?logo=nextdotjs&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL_8-4479A1?logo=mysql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)
+![Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel&logoColor=white)
+
+**🔗 Demo:** https://controle-viagens-black.vercel.app
+
 Sistema web de gestão de despesas de viagens corporativas, desenvolvido com Next.js e MySQL. Permite que colaboradores registrem e acompanhem viagens de negócio, submetam despesas para aprovação e gerem relatórios financeiros — tudo em uma interface centralizada e responsiva.
 
 ---
 
 ## Funcionalidades
 
-- **Autenticação** — login e cadastro com sessão JWT via cookie httpOnly, proteção de rotas por middleware
+- **Autenticação** — login e cadastro com sessão JWT via cookie httpOnly, senhas com hash bcrypt e proteção de rotas por middleware
 - **Dashboard** — visão geral com KPIs, gráfico de despesas mensais e distribuição por categoria
 - **Viagens** — cadastro, edição e exclusão de viagens com controle de status (rascunho → pendente → aprovada → concluída)
 - **Despesas** — lançamento de despesas vinculadas a viagens, com categorização, status de pagamento e URL de comprovante
@@ -21,7 +28,7 @@ Sistema web de gestão de despesas de viagens corporativas, desenvolvido com Nex
 |--------|-----------|
 | Frontend + API | Next.js 15 (App Router) |
 | Banco de dados | MySQL 8 — Aiven Cloud |
-| Autenticação | JWT com `jose` (edge-compatible) |
+| Autenticação | JWT com `jose` (edge-compatible) + bcrypt |
 | Gráficos | Recharts |
 | Deploy | Vercel |
 
@@ -91,13 +98,7 @@ npm run dev
 
 ## Primeiro acesso
 
-O `setup.sql` cria um usuário administrador inicial. Defina uma senha forte para ele antes de publicar o sistema e não reutilize credenciais de exemplo em produção.
-
--------|-------|
-| Login | `admin` |
-| Senha | `admin123` |
-
-> Recomenda-se alterar a senha do administrador imediatamente após o primeiro login.
+O `setup.sql` cria um usuário administrador inicial (login `admin`) com uma senha provisória. No primeiro login a senha é convertida automaticamente para hash **bcrypt**. Troque essa senha antes de publicar o sistema e não reutilize credenciais de exemplo em produção.
 
 ---
 
