@@ -3,6 +3,10 @@
 
 export const PERFIS = ['admin', 'gestor', 'financeiro', 'colaborador'];
 
+// Perfil do modo demonstração: vê tudo, não altera nada.
+export const VISITANTE = 'visitante';
+const TODOS = [...PERFIS, VISITANTE];
+
 // Quem pode levar uma viagem para cada status
 const STATUS_VIAGEM = {
   rascunho: PERFIS,
@@ -35,7 +39,13 @@ export function podeDefinirStatusDespesa(perfil, status) {
 // Acesso às rotas de API por perfil, checado no middleware.
 // Retorna true quando o perfil pode chamar o método na rota.
 export function podeAcessarApi(perfil, method, pathname) {
-  if (!PERFIS.includes(perfil)) return false;
+  if (!TODOS.includes(perfil)) return false;
+
+  // Visitante (modo demonstração): só leitura, e sem a lista de usuários
+  // (para não expor logins de pessoas reais)
+  if (perfil === VISITANTE) {
+    return !MUTATING.includes(method) && !pathname.startsWith('/api/usuarios');
+  }
 
   // Cadastro, edição e exclusão de usuários: só administrador.
   // A listagem continua aberta porque alimenta os seletores de funcionário.
@@ -49,5 +59,5 @@ export function podeAcessarApi(perfil, method, pathname) {
 // Itens do menu que cada perfil vê
 export function podeVerPagina(perfil, href) {
   if (href === '/usuarios') return perfil === 'admin';
-  return PERFIS.includes(perfil);
+  return TODOS.includes(perfil);
 }

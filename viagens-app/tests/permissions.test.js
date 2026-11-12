@@ -77,3 +77,29 @@ describe('podeVerPagina', () => {
     expect(podeVerPagina('colaborador', '/viagens')).toBe(true);
   });
 });
+
+describe('visitante (modo demonstração)', () => {
+  it('lê tudo', () => {
+    for (const path of ['/api/viagens', '/api/despesas', '/api/dashboard-stats']) {
+      expect(podeAcessarApi('visitante', 'GET', path)).toBe(true);
+    }
+  });
+
+  it('não vê a lista de usuários (logins reais)', () => {
+    expect(podeAcessarApi('visitante', 'GET', '/api/usuarios')).toBe(false);
+  });
+
+  it('não cria, edita nem apaga nada', () => {
+    for (const method of ['POST', 'PUT', 'PATCH', 'DELETE']) {
+      expect(podeAcessarApi('visitante', method, '/api/viagens')).toBe(false);
+      expect(podeAcessarApi('visitante', method, '/api/despesas/3')).toBe(false);
+    }
+  });
+
+  it('não vê a página de usuários nem define status', () => {
+    expect(podeVerPagina('visitante', '/usuarios')).toBe(false);
+    expect(podeVerPagina('visitante', '/viagens')).toBe(true);
+    expect(podeDefinirStatusViagem('visitante', 'rascunho')).toBe(false);
+    expect(podeDefinirStatusDespesa('visitante', 'pendente')).toBe(false);
+  });
+});
