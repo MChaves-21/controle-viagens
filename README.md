@@ -3,6 +3,7 @@
 ![Next.js](https://img.shields.io/badge/Next.js_15-000000?logo=nextdotjs&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL_8-4479A1?logo=mysql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?logo=jsonwebtokens&logoColor=white)
+[![CI](https://github.com/MChaves-21/controle-viagens/actions/workflows/ci.yml/badge.svg)](https://github.com/MChaves-21/controle-viagens/actions/workflows/ci.yml)
 ![Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel&logoColor=white)
 
 **🔗 Demo:** https://controle-viagens-black.vercel.app
@@ -18,6 +19,7 @@ Sistema web de gestão de despesas de viagens corporativas, desenvolvido com Nex
 - **Viagens** — cadastro, edição e exclusão de viagens com controle de status (rascunho → pendente → aprovada → concluída)
 - **Despesas** — lançamento de despesas vinculadas a viagens, com categorização, status de pagamento e URL de comprovante
 - **Usuários** — gerenciamento de usuários com quatro perfis de acesso: Administrador, Gestor, Financeiro e Colaborador
+- **Permissões no servidor** — cada perfil só faz o que lhe cabe, checado no middleware e nas rotas de API (não só escondendo botões)
 - **Relatórios** — gráficos analíticos e exportação de dados em CSV
 
 ---
@@ -59,9 +61,34 @@ mysql -h <DB_HOST> -P <DB_PORT> -u avnadmin -p --ssl-mode=REQUIRED < setup.sql
 
 ---
 
+## Perfis e permissões
+
+As regras ficam em `lib/permissions.js` e valem no servidor: chamar a API direto não fura o controle.
+
+| Ação | Admin | Gestor | Financeiro | Colaborador |
+|------|:-----:|:------:|:----------:|:-----------:|
+| Criar, editar e excluir usuários | ✅ | — | — | — |
+| Lançar viagens e despesas | ✅ | ✅ | ✅ | ✅ |
+| Aprovar ou rejeitar viagens e despesas | ✅ | ✅ | — | — |
+| Concluir viagem | ✅ | ✅ | ✅ | — |
+| Marcar despesa como paga | ✅ | — | ✅ | — |
+
+---
+
+## Testes
+
+```bash
+cd viagens-app
+npm test
+```
+
+23 testes com **Vitest** cobrem as permissões por perfil, o hash de senhas (inclusive a migração de senhas antigas), a validação do JWT e o middleware de rotas. O GitHub Actions roda os testes e o build a cada push.
+
+---
+
 ## Variáveis de ambiente
 
-Crie um arquivo `.env.local` na raiz da pasta `viagens-app`:
+Copie o `.env.example` para `.env.local` na pasta `viagens-app` e preencha:
 
 ```env
 DB_HOST=<host-do-banco>
@@ -117,7 +144,11 @@ viagens-app/
 │   └── page.js           — dashboard principal
 ├── lib/
 │   ├── db.js             — pool de conexão MySQL
-│   └── auth.js           — utilitários JWT
+│   ├── auth.js           — utilitários JWT
+│   ├── password.js       — hash bcrypt e migração de senhas antigas
+│   ├── permissions.js    — regras de acesso por perfil
+│   └── session.js        — usuário logado a partir do cookie
+├── tests/                — testes Vitest
 ├── middleware.js          — proteção de rotas
 ├── setup.sql             — script de criação do banco
 └── .env.local            — variáveis de ambiente (não versionar)

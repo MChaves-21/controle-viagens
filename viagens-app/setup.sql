@@ -23,9 +23,10 @@ CREATE TABLE IF NOT EXISTS seguranca.tbUsuarios (
   PRIMARY KEY (usuario_id)
 );
 
--- Inserir usuário admin inicial (troque a senha antes de usar em produção)
+-- Usuário admin inicial. A senha provisória já vai com hash bcrypt
+-- (nunca em texto puro): veja o README e troque-a no primeiro acesso.
 INSERT IGNORE INTO seguranca.tbUsuarios (nome, login, senha, perfil)
-VALUES ('Administrador', 'admin', 'admin123', 'admin');
+VALUES ('Administrador', 'admin', '$2a$10$14s1SWYeoytQBHegd9yLZuloBEhpn8CCU.SIpKm8P.cOQbeqRlYuG', 'admin');
 
 -- ============================================================
 -- VIAGEM

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifyToken, COOKIE_NAME } from '@/lib/auth';
+import { podeAcessarApi } from '@/lib/permissions';
 
 const PUBLIC_PATHS = [
   '/login',
@@ -27,6 +28,14 @@ export async function middleware(request) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (pathname.startsWith('/api/') && !podeAcessarApi(user.perfil, request.method, pathname)) {
+    return NextResponse.json({ error: 'Seu perfil não tem permissão para esta ação.' }, { status: 403 });
+  }
+
+  if (pathname === '/usuarios' && user.perfil !== 'admin') {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   const res = NextResponse.next();
