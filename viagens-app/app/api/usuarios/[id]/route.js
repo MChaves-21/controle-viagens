@@ -20,7 +20,8 @@ export async function PUT(req, { params }) {
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
 
@@ -64,6 +65,6 @@ export async function DELETE(req, { params }) {
     return NextResponse.json({ ok: true, tipo: 'excluido' });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }

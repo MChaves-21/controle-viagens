@@ -27,7 +27,8 @@ export async function PUT(req, { params }) {
     );
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
 
@@ -36,6 +37,7 @@ export async function DELETE(req, { params }) {
     await query(`DELETE FROM financeiro.tbContasPagar WHERE conta_pagar_id=?`, [params.id]);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }

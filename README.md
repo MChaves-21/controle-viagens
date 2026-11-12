@@ -10,6 +10,14 @@
 
 Sistema web de gestão de despesas de viagens corporativas, desenvolvido com Next.js e MySQL. Permite que colaboradores registrem e acompanhem viagens de negócio, submetam despesas para aprovação e gerem relatórios financeiros — tudo em uma interface centralizada e responsiva.
 
+
+| Dashboard | Viagens |
+|---|---|
+| ![Dashboard com KPIs, despesas por mês e por categoria](docs/prints/dashboard.png) | ![Lista de viagens com status](docs/prints/viagens.png) |
+| **Despesas** | **Relatórios** |
+| ![Despesas com categoria, viagem e status](docs/prints/despesas.png) | ![Relatórios com gráficos e exportação CSV](docs/prints/relatorios.png) |
+
+<sub>Prints com dados fictícios (`seed-demo.sql`), no modo visitante.</sub>
 ---
 
 ## Funcionalidades
@@ -102,6 +110,19 @@ JWT_SECRET=<string-longa-e-aleatoria>
 ```
 
 Na Vercel, configure as mesmas variáveis em **Settings → Environment Variables**.
+
+---
+
+## Dados de demonstração
+
+Depois do `setup.sql`, o `seed-demo.sql` cria 6 pessoas, 12 viagens e 34 despesas **fictícias**, com datas relativas a hoje (o dashboard sempre tem os últimos 6 meses):
+
+```bash
+mysql --default-character-set=utf8mb4 ... < setup.sql
+mysql --default-character-set=utf8mb4 ... < seed-demo.sql
+```
+
+Para rodar com um MySQL local sem SSL, use `DB_SSL=false`.
 
 ---
 

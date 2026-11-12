@@ -10,7 +10,8 @@ export async function GET() {
     );
     return NextResponse.json(rows);
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
 
@@ -28,6 +29,7 @@ export async function POST(req) {
     );
     return NextResponse.json({ id: result.insertId }, { status: 201 });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }

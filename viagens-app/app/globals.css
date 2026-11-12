@@ -249,3 +249,6 @@ body {
   from { transform: translateY(10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* Modo demonstração: o visitante não vê botões de criar, editar e excluir */
+body[data-perfil="visitante"] .so-escrita { display: none !important; }

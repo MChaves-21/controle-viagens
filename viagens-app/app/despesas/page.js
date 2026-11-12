@@ -117,7 +117,7 @@ export default function DespesasPage() {
             Controle de despesas de viagens corporativas
           </p>
         </div>
-        <button className="btn-primary" onClick={openNew}>
+        <button className="btn-primary so-escrita" onClick={openNew}>
           <Plus size={16} /> Nova Despesa
         </button>
       </div>
@@ -195,10 +195,10 @@ export default function DespesasPage() {
                 </td>
                 <td>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button onClick={() => openEdit(d)} style={{ padding: '5px 8px', border: '1px solid #e2e8f0', borderRadius: 6, background: 'white', cursor: 'pointer', color: '#475569' }}>
+                    <button className="so-escrita" onClick={() => openEdit(d)} style={{ padding: '5px 8px', border: '1px solid #e2e8f0', borderRadius: 6, background: 'white', cursor: 'pointer', color: '#475569' }}>
                       <Pencil size={13} />
                     </button>
-                    <button onClick={() => handleDelete(d.conta_pagar_id)} style={{ padding: '5px 8px', border: 'none', borderRadius: 6, background: '#fee2e2', cursor: 'pointer', color: '#991b1b' }}>
+                    <button className="so-escrita" onClick={() => handleDelete(d.conta_pagar_id)} style={{ padding: '5px 8px', border: 'none', borderRadius: 6, background: '#fee2e2', cursor: 'pointer', color: '#991b1b' }}>
                       <Trash2 size={13} />
                     </button>
                   </div>

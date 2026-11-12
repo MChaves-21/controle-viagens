@@ -1,6 +1,8 @@
 import { query } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
+const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
 export async function GET() {
   try {
     const [totalViagens] = await query(
@@ -60,12 +62,13 @@ export async function GET() {
         aReembolsar: parseFloat(aReembolsar.soma),
         totalUsuarios: totalUsuarios.total,
       },
-      despesasMes,
-      despesasTipo,
+      // mysql2 devolve DECIMAL como texto: o gráfico de pizza precisa de número
+      despesasMes: despesasMes.map(r => ({ ...r, mes: MESES[r.mes_num - 1], total: Number(r.total) })),
+      despesasTipo: despesasTipo.map(r => ({ ...r, tipo: r.tipo || 'Sem categoria', total: Number(r.total) })),
       ultimasViagens,
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }

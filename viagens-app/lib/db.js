@@ -10,9 +10,8 @@ function getPool() {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      ssl: {
-        rejectUnauthorized: false, // Aiven uses self-signed certs
-      },
+      // Aiven exige SSL (certificado próprio). Para um MySQL local sem SSL: DB_SSL=false
+      ssl: process.env.DB_SSL === 'false' ? undefined : { rejectUnauthorized: false },
       waitForConnections: true,
       connectionLimit: 5,
       connectTimeout: 20000,

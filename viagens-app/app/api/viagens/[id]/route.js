@@ -16,7 +16,8 @@ export async function GET(req, { params }) {
     if (!row) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     return NextResponse.json(row);
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
 
@@ -41,7 +42,8 @@ export async function PUT(req, { params }) {
     );
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
 
@@ -50,6 +52,7 @@ export async function DELETE(req, { params }) {
     await query(`DELETE FROM viagem.tbViagem WHERE viagem_id=?`, [params.id]);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }

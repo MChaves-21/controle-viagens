@@ -72,7 +72,7 @@ export default function RootLayout({ children }) {
         <title>ViagemPro</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
-      <body>
+      <body data-perfil={user?.perfil || ''}>
         <div style={{ display: 'flex', minHeight: '100vh' }}>
           {/* Sidebar */}
           <aside style={{

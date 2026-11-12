@@ -6,6 +6,7 @@ export async function GET() {
     const rows = await query(`SELECT * FROM financeiro.tbTipoTitulo ORDER BY descricao`);
     return NextResponse.json(rows);
   } catch (err) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    console.error(err);
+    return NextResponse.json({ error: 'Erro interno do servidor.' }, { status: 500 });
   }
 }
