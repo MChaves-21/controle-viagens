@@ -1,5 +1,7 @@
 import { query } from '@/lib/db';
 import { NextResponse } from 'next/server';
+import { getSessionUser } from '@/lib/session';
+import { podeDefinirStatusDespesa } from '@/lib/permissions';
 
 export async function GET(req) {
   try {
@@ -42,6 +44,11 @@ export async function POST(req) {
     const body = await req.json();
     const { funcionario_id, viagem_id, descricao, valor, data_vencimento,
             data_pagamento, status, tipo_titulo_id, observacoes, comprovante_url } = body;
+
+    const user = await getSessionUser(req);
+    if (!user || !podeDefinirStatusDespesa(user.perfil, body.status)) {
+      return NextResponse.json({ error: 'Seu perfil não pode definir este status.' }, { status: 403 });
+    }
 
     const result = await query(
       `INSERT INTO financeiro.tbContasPagar

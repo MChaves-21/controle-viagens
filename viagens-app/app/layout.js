@@ -7,6 +7,7 @@ import {
   LayoutDashboard, Plane, Receipt, Users, BarChart3,
   ChevronRight, Briefcase, LogOut, ChevronDown
 } from 'lucide-react';
+import { podeVerPagina } from '@/lib/permissions';
 
 const navItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
@@ -112,7 +113,7 @@ export default function RootLayout({ children }) {
               <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.1em', color: 'rgba(255,255,255,0.3)', padding: '0.5rem 0.5rem 0.25rem', textTransform: 'uppercase' }}>
                 Menu Principal
               </div>
-              {navItems.map(({ href, label, icon: Icon }) => (
+              {navItems.filter(({ href }) => podeVerPagina(user?.perfil, href)).map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
